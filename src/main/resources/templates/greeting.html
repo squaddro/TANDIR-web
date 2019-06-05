@@ -1,0 +1,11 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Dad jokes!</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<p th:text="'Oh hi, ' + ${name} + '! Here is you joke as a Html:'" />
+	<p th:text="${joke}" />
+</body>
+</html>
