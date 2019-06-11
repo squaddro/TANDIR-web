@@ -2,6 +2,9 @@ package com.squadro.tandir.controller;
 
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.http.MediaType;
@@ -29,17 +33,30 @@ public class LoginController {
 		consumes = MediaType.APPLICATION_JSON_VALUE
 		
 	)
-	@ResponseBody
-	public Status signinPost(@RequestBody Credential credential) {
+	public Status signinPost(
+		@RequestBody Credential credential,
+		HttpServletResponse response,
+		@CookieValue(value = "cookie_uuid", defaultValue = "notset") String cookie
+	) {
+		if(Database.getUserIdWithCookie(cookie) != null){
+			return new Status(StatusCode.REJECT_ALLREADY_LOGGED_IN);
+		}
+		
 		String user = credential.getUser_name();
 		String pass = credential.getPassword();
-
+		
 		if(user == null || pass == null) {
 			return new Status(StatusCode.SIGNIN_REJECT);
 		}
 		
 		if(Database.checkPassword(user, pass)) {
-			return new Status(StatusCode.SIGNIN_SUCCESSFULL);
+			String newUuid = UUID.randomUUID().toString();
+			if(Database.setCookie(user, newUuid)){
+				response.addCookie(new Cookie("cookie_uuid", newUuid));
+				return new Status(StatusCode.SIGNIN_SUCCESSFULL);
+			}
+			else
+				return new Status(StatusCode.SIGNIN_REJECT_COOKIE_NOTSET);
 		}
 		else {
 			return new Status(StatusCode.SIGNIN_REJECT);
@@ -52,8 +69,14 @@ public class LoginController {
 		produces = MediaType.APPLICATION_JSON_VALUE,
 		consumes = MediaType.APPLICATION_JSON_VALUE
 	)
-	@ResponseBody
-	public Status signupPost(@RequestBody Credential credential) {
+	public Status signupPost(
+		@RequestBody Credential credential,
+		@CookieValue(value = "cookie_uuid", defaultValue = "notset") String cookie
+	) {
+		if(Database.getUserIdWithCookie(cookie) != null){
+			return new Status(StatusCode.REJECT_ALLREADY_LOGGED_IN);
+		}
+		
 		String user = credential.getUser_name();
 		String pass = credential.getPassword();
 

@@ -11,7 +11,10 @@ public enum StatusCode {
 	SIGNUP_REJECT_USERNAME(104, "Username allready exists!"),
 	SIGNUP_REJECT_PASSWORD(105, "Password should be in the format!"),
 	RECIPE_ADDED(106, "Recipe is successfully added!"),
-	RECIPE_NOT_ADDED(107, "Recipe could not be added!");
+	RECIPE_NOT_ADDED(107, "Recipe could not be added!"),
+	REJECT_ALLREADY_LOGGED_IN(108, "You are allready logged in!"),
+	REJECT_NOT_LOGGED_IN(109, "You are not logged in!"),
+	SIGNIN_REJECT_COOKIE_NOTSET(110, "Cookie could not be set!");
 	
 	private StatusCode(int status, String message) {
 		this.status = status;

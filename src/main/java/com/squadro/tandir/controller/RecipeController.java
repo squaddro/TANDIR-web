@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.http.MediaType;
@@ -16,26 +17,21 @@ import org.springframework.http.MediaType;
 import com.squadro.tandir.message.Recipe;
 import com.squadro.tandir.message.Status;
 import com.squadro.tandir.message.StatusCode;
+import com.squadro.tandir.service.Database;
 
 @RestController
 public class RecipeController {
 	
-	Recipe temp;
-	
-	@RequestMapping(
+	/*@RequestMapping(
 		value = "/recipe",
 		method = RequestMethod.GET,
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	@ResponseBody
 	public Recipe[] recipe() {
-		// TODO DATABASE
-		Recipe[] recipes = new Recipe[100];
-		for(int i=0; i<100; i++) {
-			recipes[i] = randomRecipe();
-		}
+		Recipe[] recipes = Database.getAllRecipes();
 		return recipes;
-	}
+	}*/
 	
 	@RequestMapping(
 		value = "/recipe/{id}",
@@ -44,8 +40,8 @@ public class RecipeController {
 	)
 	@ResponseBody
 	public Recipe recipeWithId(@PathVariable("id") String recipeId) {
-		// TODO DATABASE
-		return temp;
+		Recipe recipe = Database.getRecipe(recipeId);
+		return recipe;
 	}
 	
 	@RequestMapping(
@@ -54,11 +50,26 @@ public class RecipeController {
 		consumes = MediaType.APPLICATION_JSON_VALUE,
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
-	@ResponseBody
-	public Status addRecipe(@RequestBody Recipe recipe) {
-		// TODO DATABASE
-		temp = recipe;
-		return new Status(StatusCode.RECIPE_ADDED);
+	public Status addRecipe(
+		@RequestBody Recipe recipe,
+		@CookieValue(value = "cookie_uuid", defaultValue = "notset") String cookie
+	) {
+		String userId = Database.getUserIdWithCookie(cookie);
+		if(userId == null){
+			return new Status(StatusCode.REJECT_NOT_LOGGED_IN);
+		}
+		String rName = recipe.getRecipe_name();
+		String rDesc = recipe.getRecipe_desc();
+		if(rName == null || rDesc == null){
+			return new Status(StatusCode.RECIPE_NOT_ADDED);
+		}
+		String rUuid = UUID.randomUUID().toString();
+		
+		boolean result = Database.addRecipe(rUuid, rName, rDesc, userId);
+		if(result)
+			return new Status(StatusCode.RECIPE_ADDED);
+		else
+			return new Status(StatusCode.RECIPE_NOT_ADDED);
 	}
 	
 	private Recipe randomRecipe(){
