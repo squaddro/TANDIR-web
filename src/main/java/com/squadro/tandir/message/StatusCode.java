@@ -14,7 +14,9 @@ public enum StatusCode {
 	RECIPE_NOT_ADDED(107, "Recipe could not be added!"),
 	REJECT_ALLREADY_LOGGED_IN(108, "You are allready logged in!"),
 	REJECT_NOT_LOGGED_IN(109, "You are not logged in!"),
-	SIGNIN_REJECT_COOKIE_NOTSET(110, "Cookie could not be set!");
+	SIGNIN_REJECT_COOKIE_NOTSET(110, "Cookie could not be set!"),
+	RECIPE_DELETED(111, "Recipe is successfully deleted!"),
+	RECIPE_NOT_DELETED(112, "Recipe is not deleted!");
 	
 	private StatusCode(int status, String message) {
 		this.status = status;

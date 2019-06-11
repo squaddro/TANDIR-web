@@ -22,7 +22,7 @@ import com.squadro.tandir.service.Database;
 @RestController
 public class RecipeController {
 	
-	/*@RequestMapping(
+	@RequestMapping(
 		value = "/recipe",
 		method = RequestMethod.GET,
 		produces = MediaType.APPLICATION_JSON_VALUE
@@ -31,7 +31,7 @@ public class RecipeController {
 	public Recipe[] recipe() {
 		Recipe[] recipes = Database.getAllRecipes();
 		return recipes;
-	}*/
+	}
 	
 	@RequestMapping(
 		value = "/recipe/{id}",
@@ -72,11 +72,30 @@ public class RecipeController {
 			return new Status(StatusCode.RECIPE_NOT_ADDED);
 	}
 	
-	private Recipe randomRecipe(){
-		String id = UUID.randomUUID().toString();
-		String name = UUID.randomUUID().toString();
-		String desc = UUID.randomUUID().toString();
-		String user = UUID.randomUUID().toString();
-		return new Recipe(id, name, desc, user);
+	@RequestMapping(
+		value = "/deleterecipe",
+		method = RequestMethod.POST,
+		consumes = MediaType.APPLICATION_JSON_VALUE,
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public Status deleteRecipe(
+		@RequestBody Recipe recipe,
+		@CookieValue(value = "cookie_uuid", defaultValue = "notset") String cookie
+	) {
+		String userId = Database.getUserIdWithCookie(cookie);
+		if(userId == null){
+			return new Status(StatusCode.REJECT_NOT_LOGGED_IN);
+		}
+		
+		String rId = recipe.getRecipe_id();
+		if(rId == null){
+			return new Status(StatusCode.RECIPE_NOT_DELETED);
+		}
+		
+		boolean result = Database.deleteRecipe(rId, userId);
+		if(result)
+			return new Status(StatusCode.RECIPE_DELETED);
+		else
+			return new Status(StatusCode.RECIPE_NOT_DELETED);
 	}
 }

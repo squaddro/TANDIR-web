@@ -9,8 +9,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import com.squadro.tandir.message.Recipe;
+import com.squadro.tandir.message.User;
 
 public class Database {
 	
@@ -223,5 +225,156 @@ public class Database {
 		}
 		
 		return null;
+	}
+	
+	public static Recipe[] getAllRecipes(){	
+		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+		try {
+			Connection conn = connect();
+			
+			
+			String query = "SELECT * FROM RECIPE";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			ResultSet resultSet = stmt.executeQuery();
+			while(resultSet.next()) {
+				String recipe_id = resultSet.getString("RECIPE_ID");
+				String recipe_name = resultSet.getString("RECIPE_NAME");
+				String recipe_desc = resultSet.getString("RECIPE_DESC");
+				
+				//get userid
+				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, recipe_id);
+				ResultSet resultSet2 = stmt.executeQuery();
+				Recipe recipe = null;
+				if(resultSet2.next()){
+					String user_id = resultSet2.getString("USER_ID");
+					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id);
+				}
+				else {
+					conn.close();
+					return null;
+				}
+				recipes.add(recipe);
+			}
+			
+			conn.close();
+			return recipes.toArray(new Recipe[recipes.size()]);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public static User[] getAllUsers(){	
+		ArrayList<User> users = new ArrayList<User>();
+		try {
+			Connection conn = connect();
+			
+			String query = "SELECT * FROM ACCOUNT";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			ResultSet resultSet = stmt.executeQuery();
+			while(resultSet.next()) {
+				String user_id = resultSet.getString("USER_ID");
+				
+				//get recipe ids
+				query = "SELECT * FROM ACCOUNT_RECIPE WHERE USER_ID = ?";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, user_id);
+				ResultSet resultSet2 = stmt.executeQuery();
+				
+				ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+				while(resultSet2.next()){
+					recipes.add(Database.getRecipe(resultSet2.getString("RECIPE_ID")));
+				}
+				
+				User user = new User(user_id, recipes.toArray(new Recipe[recipes.size()]));
+				users.add(user);
+			}
+			
+			conn.close();
+			return users.toArray(new User[users.size()]);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public static User getUser(String id){	
+		
+		try {
+			Connection conn = connect();
+			
+			String query = "SELECT * FROM ACCOUNT WHERE USER_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, id);
+			ResultSet resultSet = stmt.executeQuery();
+			
+			if(resultSet.next()) {
+				String user_id = resultSet.getString("USER_ID");
+				
+				//get recipe ids
+				query = "SELECT * FROM ACCOUNT_RECIPE WHERE USER_ID = ?";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, user_id);
+				resultSet = stmt.executeQuery();
+				
+				ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+				while(resultSet.next()){
+					recipes.add(Database.getRecipe(resultSet.getString("RECIPE_ID")));
+				}
+				
+				User user = new User(user_id, recipes.toArray(new Recipe[recipes.size()]));
+				conn.close();
+				return user;
+			}
+			
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public static boolean deleteRecipe(String recipeid, String userid){
+		try {
+			Connection conn = connect();
+			
+			// check if user has recipe
+			String query = "SELECT * FROM ACCOUNT_RECIPE WHERE USER_ID = ? AND RECIPE_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, userid);
+			stmt.setString(2, recipeid);
+			ResultSet resultSet = stmt.executeQuery();
+			if(!resultSet.next()){
+				conn.close();
+				return false;
+			}
+			
+			query = "DELETE FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, recipeid);
+			if(stmt.executeUpdate()==0){
+				conn.close();
+				return false;
+			}
+			
+			query = "DELETE FROM RECIPE WHERE RECIPE_ID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, recipeid);
+			if(stmt.executeUpdate()==0) {
+				conn.close();
+				return false;
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
 	}
 }
