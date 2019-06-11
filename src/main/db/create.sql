@@ -1,6 +1,7 @@
 CREATE TABLE ACCOUNT (
         User_Id varchar(20),
-        User_Password varchar(20)
+        User_Password varchar(20),
+	User_Cookie char(36)
 );
 
 CREATE TABLE RECIPE (
@@ -11,5 +12,6 @@ CREATE TABLE RECIPE (
 
 CREATE TABLE ACCOUNT_RECIPE (
         User_Id varchar(20),
-        Recipe_Id integer
+        Recipe_Id integer,
+	User_Cookie char(36)
 );
