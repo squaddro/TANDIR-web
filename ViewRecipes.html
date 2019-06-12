@@ -28,10 +28,13 @@
                             <ul class="tn-main-nav-ul">
                                
                                 <li class="tn-nav-item">
-                                    <a href="#welcome" class="tn-nav-item-link">Recipe1</a>
+                                    <a href="#welcome" class="tn-nav-item-link">Welcome</a>
                                 </li>
                                 <li class="tn-nav-item">
-                                    <a href="#myRecipes" class="tn-nav-item-link">Recipe2</a>
+                                    <a href="#myRecipes" class="tn-nav-item-link">Recipe</a>
+                                </li>
+                                <li class="tn-nav-item">
+                                    <a href="#createRecipeSection" class="tn-nav-item-link">Create Recipe</a>
                                 </li>
 
                             </ul>
@@ -54,27 +57,26 @@
                             <!-- Recipes section -->     
                             <section id="myRecipes" class="tn-section">
                                 <header><h2 class="tn-orange-text tn-section-title tn-margin-b-30">My Recipes</h2></header>
-                                <div class="tn-gallery-container tn-gallery-1">
-                                    <div class="tn-img-container tn-img-container-1">
-                                        <a href="img/Tandir-12.jpg"><img src="img/Tandir-12.jpg" alt="Image" class="img-fluid tn-img-tn"></a>    
-                                    </div>
-                                    <div class="tn-img-container tn-img-container-1">
-                                        <a href="img/Tandir-02.jpg"><img src="img/Tandir-02.jpg" alt="Image" class="img-fluid tn-img-tn"></a>    
-                                    </div>
-                                    <div class="tn-img-container tn-img-container-1">
-                                        <a href="img/Tandir-10.jpg"><img src="img/Tandir-10.jpg" alt="Image" class="img-fluid tn-img-tn"></a>    
-                                    </div>
-                                    <div class="tn-img-container tn-img-container-1">
-                                        <a href="img/Tandir-06.jpg"><img src="img/Tandir-06.jpg" alt="Image" class="img-fluid tn-img-tn"></a>    
-                                    </div>
-                                    <div class="tn-img-container tn-img-container-1">
-                                        <a href="img/Tandir-07.jpg"><img src="img/Tandir-07.jpg" alt="Image" class="img-fluid tn-img-tn"></a>    
-                                    </div>                                    
-                                </div>
-                                 <input id="viewRecipes" type="button" value="View Recipes"/>
+                                <p id="WriteRecipeName"></p>
+                                <p id="WriteRecipeDesc"></p>                       
+                            </section>  
+                            
+                            <section id="createRecipeSection" class="tn-section">
+                                <header><h2 class="tn-orange-text tn-section-title tn-margin-b-30">Add A New Recipe</h2></header>
+                                <section id="Name" class="tn-section">
+                                <label>Recipe Name:</label>
+                                <textarea id="getName" rows="2" cols="10">
+								</textarea>
+                                </section>
+                                <section id="Recipe" class="tn-section">
+                                <label>Recipe:</label>
+                                <textarea id="getRecipe" rows="8" cols="50">
+								</textarea>
+                                </section>
+                                
                                  <input id="createRecipe" type="button" value="Create Recipe"/>
-                                 <input id="deleteRecipe" type="button" value="Delete Recipe"/>  
                             </section>        
+                                  
                         </div>  
                         
                     </div> <!-- Right column: content -->
@@ -88,7 +90,9 @@
         <script src="js/jquery-1.11.3.min.js"></script>             
         <script src="js/jquery.magnific-popup.min.js"></script>     
         <script src="js/jquery.singlePageNav.min.js"></script>      
-        <script src="js/popUpImage.js"></script>         
+        <script src="js/popUpImage.js"></script>  
+        <script src="js/postActivity.js"></script>      
+        <script src="js/getActivity.js"></script> 
 </body>
 </html>
 
