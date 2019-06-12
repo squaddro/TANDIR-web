@@ -12,6 +12,7 @@ $(document).ready(function(){
     	var request = new XMLHttpRequest();
         var url = "https://tandir.herokuapp.com/user/" + userId;
     	request.open('GET', url, true);
+    	request.withCredentials = true;
     	request.onload = function() {
     	  // Begin accessing JSON data here
     	  var data = JSON.parse(this.response);
@@ -25,6 +26,7 @@ $(document).ready(function(){
             	  var recId = data.recipes[i];
                   var recipe = "https://tandir.herokuapp.com/recipe/" + recId;
                   request2.open('GET', recipe, true);
+              	  request2.withCredentials = true;
                   request2.onload = function() {
                 	  var deneme= { "recipe_name" : "ilk tarif", "recipe_desc" : "domatesler dogranir." };
                 	  var data2 = JSON.parse(this.response);

@@ -35,6 +35,7 @@ $(document).ready(function(){
         var url = "https://tandir.herokuapp.com/signup";
     	userData.open('POST', url, true);
     	userData.setRequestHeader('Content-Type', 'application/json');
+    	userData.withCredentials = true;
     	var data = {};
         data.user_name = document.getElementById('signup_username').value;
         data.password = document.getElementById('signup_password').value;
@@ -63,6 +64,7 @@ $(document).ready(function(){
     	var url = "https://tandir.herokuapp.com/addrecipe";
     	userData.open('POST', url, true);
     	userData.setRequestHeader('Content-Type', 'application/json');
+    	userData.withCredentials = true;
     	var data = {};
         data.recipe_id = null;
         data.recipe_name = document.getElementById('getName').value;
