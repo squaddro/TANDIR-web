@@ -76,7 +76,10 @@ $(document).ready(function(){
     		if (userData.readyState == 4 && userData.status == 200) {
     	        var response = JSON.parse(userData.responseText);
     	        if(response.status == 106){
-                    alert(response.message);    	        	
+                    alert(response.message);
+                    document.getElementById('getName').value = '';
+                    document.getElementById('getRecipe').value = '';
+                    location.reload();
     	        }
     	        else{
     	        	alert(response.message);
