@@ -377,4 +377,70 @@ public class Database {
 		
 		return true;
 	}
+	
+	public static boolean updateRecipeName(String recipeid, String recipeName, String userid){
+		try {
+			Connection conn = connect();
+			
+			// check if user has recipe
+			String query = "SELECT * FROM ACCOUNT_RECIPE WHERE USER_ID = ? AND RECIPE_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, userid);
+			stmt.setString(2, recipeid);
+			ResultSet resultSet = stmt.executeQuery();
+			if(!resultSet.next()){
+				conn.close();
+				return false;
+			}
+			
+			// update recipe name
+			query = "UPDATE RECIPE SET RECIPE_NAME = ? WHERE RECIPE_ID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, recipeName);
+			stmt.setString(2, recipeid);
+			if(stmt.executeUpdate()==0) {
+				conn.close();
+				return false;
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public static boolean updateRecipeDesc(String recipeid, String recipeDesc, String userid){
+		try {
+			Connection conn = connect();
+			
+			// check if user has recipe
+			String query = "SELECT * FROM ACCOUNT_RECIPE WHERE USER_ID = ? AND RECIPE_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, userid);
+			stmt.setString(2, recipeid);
+			ResultSet resultSet = stmt.executeQuery();
+			if(!resultSet.next()){
+				conn.close();
+				return false;
+			}
+			
+			// update recipe desc
+			query = "UPDATE RECIPE SET RECIPE_DESC = ? WHERE RECIPE_ID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, recipeDesc);
+			stmt.setString(2, recipeid);
+			if(stmt.executeUpdate()==0) {
+				conn.close();
+				return false;
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
 }

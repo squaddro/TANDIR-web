@@ -98,4 +98,47 @@ public class RecipeController {
 		else
 			return new Status(StatusCode.RECIPE_NOT_DELETED);
 	}
+	
+	@RequestMapping(
+		value = "/updaterecipe",
+		method = RequestMethod.POST,
+		consumes = MediaType.APPLICATION_JSON_VALUE,
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public Status updateRecipe(
+		@RequestBody Recipe recipe,
+		@CookieValue(value = "cookie_uuid", defaultValue = "notset") String cookie
+	) {
+		// check if user logged in
+		String userId = Database.getUserIdWithCookie(cookie);
+		if(userId == null) {
+			return new Status(StatusCode.REJECT_NOT_LOGGED_IN);
+		}
+		
+		// check if recipe_id is not null
+		String rId = recipe.getRecipe_id();
+		if(rId == null) {
+			return new Status(StatusCode.RECIPE_NOT_UPDATED);
+		}
+		
+		// check if name attribute is set
+		String rName = recipe.getRecipe_name();
+		if(rName != null){
+			boolean result = Database.updateRecipeName(rId, rName, userId);
+			if(!result)
+				return new Status(StatusCode.RECIPE_NOT_UPDATED);
+		}
+		
+		// check if desc attribute is set
+		String rDesc = recipe.getRecipe_desc();
+		if(rDesc != null){
+			boolean result = Database.updateRecipeDesc(rId, rDesc, userId);
+			if(!result)
+				// TODO what if name is updated successfully?
+				return new Status(StatusCode.RECIPE_NOT_UPDATED);
+		}
+		
+		// if everything goes well
+		return new Status(StatusCode.RECIPE_UPDATED);
+	}
 }
