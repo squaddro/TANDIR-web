@@ -88,6 +88,8 @@ public class Database {
 	}
 	
 	public static String getUserIdWithCookie(String cookie) {
+		if("notset".equals(cookie)) // reject if cookie id is "notset"
+			return null;
 		String result = null;
 		try {
 			Connection conn = connect();
@@ -113,6 +115,8 @@ public class Database {
 	}
 	
 	public static boolean setCookie(String username, String cookie){
+		if("notset".equals(cookie)) // reject if cookie id is "notset"
+			return false;
 		boolean result = false;
 		try {
 			Connection conn = connect();

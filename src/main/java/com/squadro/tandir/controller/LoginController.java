@@ -91,4 +91,25 @@ public class LoginController {
 			return new Status(StatusCode.SIGNUP_REJECT);
 		}
 	}
+	
+	@RequestMapping(
+		value = "/signout",
+		method = RequestMethod.GET,
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public Status signoutGet(
+		HttpServletResponse response,
+		@CookieValue(value = "cookie_uuid", defaultValue = "notset") String cookie
+	) {
+		Cookie cookieToRemove = new Cookie("cookie_uuid", "signedout");
+		cookieToRemove.setMaxAge(0);
+		response.addCookie(cookieToRemove);
+		String userId = Database.getUserIdWithCookie(cookie);
+		if(userId == null){
+			return new Status(StatusCode.REJECT_NOT_LOGGED_IN);
+		}
+		
+		Database.setCookie(userId, null); // set user cookie to null
+		return new Status(StatusCode.SIGNOUT_SUCCESSFULL);
+	}
 }
