@@ -36,6 +36,8 @@
 								class="tn-nav-item-link">Create Recipe</a></li>
 							<li class="tn-nav-item"><a href="#deleteRecipeSection"
 								class="tn-nav-item-link">Delete Recipe</a></li>
+							<li class="tn-nav-item"><a href="#UpdatedRecipe"
+								class="tn-nav-item-link">Update Recipe</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -100,6 +102,25 @@
 							</section>
 							<input id="deleteRecipe" type="button" value="Delete Recipe" />
 						</section>
+						<section id="updateRecipeSection" class="tn-section">
+							<header>
+								<h2 class="tn-orange-text tn-section-title tn-margin-b-30">Update
+									Recipe</h2>
+							</header>
+							<section id="UpdatedRecipe" class="tn-section">
+								<label>Recipe name to update:</label>
+								<textarea id="updatedRecipeName"></textarea>
+							</section>
+						    <textarea id="newInfo"></textarea>
+						    <div id="selected">						    
+							<input type="radio" name="recipeName" value="Name" id=upName> Update Recipe Name
+  							<input type="radio" name="recipeDesc" value="Desc" id=upDesc> Update Recipe
+  							</div> 
+							<input id="updateRecipe" type="button" value="Update" />
+						</section>
+						<section id="signOut" class="tn-section">
+                            <button id="signOut" type="button" value="Sign Out">Sign Out</button>                         
+                        </section> 
 					</div>
 
 				</div>
@@ -119,6 +140,7 @@
 	<script src="js/popUpImage.js"></script>
 	<script src="js/postActivity.js"></script>
 	<script src="js/getActivity.js"></script>
+	<script src="js/index.js"></script>
 </body>
 </html>
 

@@ -1,12 +1,3 @@
-$(document).ready(function(){
-    $('#viewRecipes').click(function(){
-    	var queryString = decodeURIComponent(window.location.search);
-    	queryString = queryString.substring(1);
-    	var queries = queryString.split("&");
-    	var queryString2 = "?" + queries[0]; 
-	    window.location.href = "ViewRecipes.html" + queryString2;
-    });
-});
 
 function setRecipes(btn){
 	document.getElementById(btn.id).disabled = true;
@@ -60,3 +51,13 @@ function setRecipes(btn){
 	}
 	request.send();
 }
+
+$(document).ready(function(){
+    $('#viewRecipes').click(function(){
+    	var queryString = decodeURIComponent(window.location.search);
+    	queryString = queryString.substring(1);
+    	var queries = queryString.split("&");
+    	var queryString2 = "?" + queries[0]; 
+	    window.location.href = "ViewRecipes.html" + queryString2;
+    });
+});

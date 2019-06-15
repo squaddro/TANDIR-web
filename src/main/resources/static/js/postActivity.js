@@ -143,9 +143,72 @@ $(document).ready(function(){
     	     alert('error');
     	  }
     	}
-    	request.send();
+    	request.send();      
+    });
+    
+    $('#updateRecipe').click(function(){
     	
+    	var queryString = decodeURIComponent(window.location.search);
+    	queryString = queryString.substring(1);
+    	var queries = queryString.split("&");
+    	var queryString2 = "?" + queries[0]; 
+    	var userId = queries[0].substring(6); 
     	
-        
+    	var request = new XMLHttpRequest();
+        var url = "https://tandir.herokuapp.com/user/" + userId;
+    	request.open('GET', url, true);
+    	request.withCredentials = true;
+    	request.onload = function() {
+    	  // Begin accessing JSON data here
+    	  var data = JSON.parse(this.response);
+		  
+    	  if (request.status==200) {
+    		  var rec_id;
+              for(var i=0; i<data.recipes.length; i++){
+            	  if(document.getElementById('updatedRecipeName').value.replace(/\t/g, '') === data.recipes[i].recipe_name){
+            	    rec_id = data.recipes[i].recipe_id;
+            	  }
+              }      
+            var recipeData = new XMLHttpRequest();
+          	var url = "https://tandir.herokuapp.com/updaterecipe";
+          	recipeData.open('POST', url, true);
+          	recipeData.setRequestHeader('Content-Type', 'application/json');
+          	recipeData.withCredentials = true;
+          	var data = {};
+            data.recipe_id = rec_id;
+            data.recipe_name = null;
+            data.recipe_desc = null;
+          	var checkedValue = null; 
+          	if (document.getElementById('upName').checked) {
+  	        	data.recipe_name = document.getElementById('newInfo').value.replace(/\t/g, '');
+          	}
+          	if (document.getElementById('upDesc').checked) {
+  	    		data.recipe_desc = document.getElementById('newInfo').value.replace(/\t/g, '');
+          	}
+          	
+        	var json_data = JSON.stringify(data);
+
+          	recipeData.onload = function () {
+          		
+          		if (recipeData.readyState == 4 && recipeData.status == 200) {
+          	        var response = JSON.parse(recipeData.responseText);
+          	        if(response.status == 113){
+                          alert(response.message);
+                          document.getElementById('newInfo').value = '';
+                          document.getElementById('updatedRecipeName').value = '';
+                          location.reload();
+          	        }
+          	        else{
+          	        	alert(response.message);
+          	        }
+          	    }  		
+          	}
+          	recipeData.send(json_data);
+          	
+    	  } else {
+    	     alert('error');
+    	  }
+    	}
+    	request.send();      
     });
 });
