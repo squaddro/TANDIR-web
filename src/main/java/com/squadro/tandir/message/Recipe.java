@@ -8,18 +8,18 @@ public class Recipe {
 	private String recipe_name;
 	private String recipe_desc;
 	private String user_name;
-	private String[] URIs;
+	private String[] uris;
 	
 	public Recipe(){
 		// nothing
 	}
 	
-	public Recipe(String recipe_id, String recipe_name, String recipe_desc, String user_name, String[] URIs) {
+	public Recipe(String recipe_id, String recipe_name, String recipe_desc, String user_name, String[] uris) {
 		this.recipe_id = recipe_id;
 		this.recipe_name = recipe_name;
 		this.recipe_desc = recipe_desc;
 		this.user_name = user_name;
-		this.URIs = URIs;
+		this.uris = uris;
 	}
 	
 	public String getRecipe_id() {
@@ -55,10 +55,10 @@ public class Recipe {
 	}
 	
 	public String[] getURIs() {
-		return URIs;
+		return uris;
 	}
 	
-	public void setUri(String [] URIs) {
-		this.URIs = URIs;
+	public void setURIs(String [] uris) {
+		this.uris = uris;
 	}
 }
