@@ -509,4 +509,39 @@ public class Database {
 		
 		return true;
 	}
+	
+	public static boolean updateRecipeTag(String recipeid, String tag, String userid) {
+		try {
+			Connection conn = connect();
+			
+			// check if user has recipe
+			String query = "SELECT * FROM ACCOUNT_RECIPE WHERE USER_ID = ? AND RECIPE_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, userid);
+			stmt.setString(2, recipeid);
+			ResultSet resultSet = stmt.executeQuery();
+			if(!resultSet.next()){
+				conn.close();
+				return false;
+			}
+			
+			// update recipe tag
+			query = "UPDATE RECIPE SET TAG = ? WHERE RECIPE_ID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, tag);
+			stmt.setString(2, recipeid);
+			if(stmt.executeUpdate()==0) {
+				conn.close();
+				return false;
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+		
+	}
+
 }

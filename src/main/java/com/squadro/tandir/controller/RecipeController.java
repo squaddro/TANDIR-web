@@ -141,6 +141,12 @@ public class RecipeController {
 				// TODO what if name is updated successfully?
 				return new Status(StatusCode.RECIPE_NOT_UPDATED);
 		}
+		String tag = recipe.getTag();
+		if(tag != null) {
+			boolean result = Database.updateRecipeTag(rId, tag, userId);
+			if(!result)
+				return new Status(StatusCode.RECIPE_NOT_UPDATED);
+		}
 		
 		// if everything goes well
 		return new Status(StatusCode.RECIPE_UPDATED);
