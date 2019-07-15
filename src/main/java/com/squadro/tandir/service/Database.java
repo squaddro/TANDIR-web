@@ -187,16 +187,19 @@ public class Database {
 				conn.close();
 				return false;
 			}
-			for(int i = 0;i<URIs.length;i++) {
-				query = "INSERT INTO RECIPE_PHOTOS VALUES(?, ?)";
-				stmt = conn.prepareStatement(query);
-				stmt.setString(1, recipeid);
-				stmt.setString(2, URIs[i]);
-				if(stmt.executeUpdate()==0) {
-				conn.close();
-				return false;
-				}	
+			if(URIs != null) {
+				for(int i = 0;i<URIs.length;i++) {
+					query = "INSERT INTO RECIPE_PHOTOS VALUES(?, ?)";
+					stmt = conn.prepareStatement(query);
+					stmt.setString(1, recipeid);
+					stmt.setString(2, URIs[i]);
+					if(stmt.executeUpdate()==0) {
+						conn.close();
+						return false;
+					}	
+				}
 			}
+			
 			
 			
 			conn.close();
