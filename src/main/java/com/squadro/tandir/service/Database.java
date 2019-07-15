@@ -147,7 +147,7 @@ public class Database {
 		return result;
 	}
 	
-	public static boolean addRecipe(String recipeid, String name, String desc, String userid, String [] URIs){
+	public static boolean addRecipe(String recipeid, String name, String desc, String userid, String [] URIs, String tag){
 		try {
 			Connection conn = connect();
 			
@@ -169,11 +169,12 @@ public class Database {
 				conn.close();
 				return false;
 			}
-			query = "INSERT INTO RECIPE VALUES(?, ?, ?)";
+			query = "INSERT INTO RECIPE VALUES(?, ?, ?, ?)";
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, recipeid);
 			stmt.setString(2, name);
 			stmt.setString(3, desc);
+			stmt.setString(4, tag);
 			if(stmt.executeUpdate()==0){
 				conn.close();
 				return false;
@@ -256,6 +257,7 @@ public class Database {
 				String recipe_id = resultSet.getString("RECIPE_ID");
 				String recipe_name = resultSet.getString("RECIPE_NAME");
 				String recipe_desc = resultSet.getString("RECIPE_DESC");
+				String tag = resultSet.getString("TAG");
 				
 				//get userid
 				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
@@ -265,7 +267,7 @@ public class Database {
 				if(resultSet.next()){
 					String user_id = resultSet.getString("USER_ID");
 					String[] URIs = getURIs(recipe_id);
-					Recipe recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id,URIs);
+					Recipe recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id, URIs, tag);
 					conn.close();
 					return recipe;
 				}
@@ -292,6 +294,7 @@ public class Database {
 				String recipe_id = resultSet.getString("RECIPE_ID");
 				String recipe_name = resultSet.getString("RECIPE_NAME");
 				String recipe_desc = resultSet.getString("RECIPE_DESC");
+				String tag = resultSet.getString("TAG");
 				
 				//get userid
 				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
@@ -302,7 +305,7 @@ public class Database {
 				if(resultSet2.next()){
 					String user_id = resultSet2.getString("USER_ID");
 					String[] URIs = getURIs(recipe_id);
-					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id,URIs);
+					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id, URIs, tag);
 				}
 				else {
 					conn.close();
@@ -416,6 +419,13 @@ public class Database {
 			}
 			
 			query = "DELETE FROM RECIPE WHERE RECIPE_ID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, recipeid);
+			if(stmt.executeUpdate()==0) {
+				conn.close();
+				return false;
+			}
+			query = "DELETE FROM RECIPE_PHOTOS WHERE RECIPE_ID = ?";
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, recipeid);
 			if(stmt.executeUpdate()==0) {

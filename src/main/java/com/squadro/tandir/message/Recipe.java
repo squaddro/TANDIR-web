@@ -9,17 +9,19 @@ public class Recipe {
 	private String recipe_desc;
 	private String user_name;
 	private String[] uris;
+	private String tag;
 	
 	public Recipe(){
 		// nothing
 	}
 	
-	public Recipe(String recipe_id, String recipe_name, String recipe_desc, String user_name, String[] uris) {
+	public Recipe(String recipe_id, String recipe_name, String recipe_desc, String user_name, String[] uris, String tag) {
 		this.recipe_id = recipe_id;
 		this.recipe_name = recipe_name;
 		this.recipe_desc = recipe_desc;
 		this.user_name = user_name;
 		this.uris = uris;
+		this.tag = tag;
 	}
 	
 	public String getRecipe_id() {
@@ -60,5 +62,13 @@ public class Recipe {
 	
 	public void setURIs(String [] uris) {
 		this.uris = uris;
+	}
+	
+	public String getTag() {
+		return tag;
+	}
+	
+	public void setTag() {
+		this.tag = tag;
 	}
 }
