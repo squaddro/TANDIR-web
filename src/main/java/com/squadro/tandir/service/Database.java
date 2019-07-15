@@ -147,7 +147,7 @@ public class Database {
 		return result;
 	}
 	
-	public static boolean addRecipe(String recipeid, String name, String desc, String userid){
+	public static boolean addRecipe(String recipeid, String name, String desc, String userid, String [] URIs){
 		try {
 			Connection conn = connect();
 			
@@ -186,7 +186,20 @@ public class Database {
 				conn.close();
 				return false;
 			}
+			for(int i = 0;i<URIs.length;i++) {
+				query = "INSERT INTO RECIPE_PHOTOS VALUES(?, ?)";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, recipeid);
+				stmt.setString(2, URIs[i]);
+				if(stmt.executeUpdate()==0) {
+				conn.close();
+				return false;
+				}	
+			}
+			
+			
 			conn.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -195,6 +208,40 @@ public class Database {
 		return true;
 	}
 	
+		public static String[] getURIs(String id) {
+		ArrayList<String> URIs = new ArrayList<String>();
+		try {
+			Connection conn = connect();
+			
+			// check if recipe exists
+			String query = "SELECT * FROM RECIPE WHERE RECIPE_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, id);
+			ResultSet resultSet = stmt.executeQuery();
+			if(resultSet.next()) {
+				String recipe_id = resultSet.getString("RECIPE_ID");
+				
+				query = "SELECT * FROM RECIPE_PHOTOS WHERE RECIPE_ID = ?";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, recipe_id);
+				ResultSet resultSet2 = stmt.executeQuery();
+				
+				
+				while(resultSet2.next()) {
+					String uri = resultSet2.getString("uri");
+					URIs.add(uri);
+				}
+				
+			}
+			conn.close();
+			return URIs.toArray(new String[URIs.size()]);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
 	public static Recipe getRecipe(String id){
 		
 		try {
@@ -217,7 +264,8 @@ public class Database {
 				resultSet = stmt.executeQuery();
 				if(resultSet.next()){
 					String user_id = resultSet.getString("USER_ID");
-					Recipe recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id);
+					String[] URIs = getURIs(recipe_id);
+					Recipe recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id,URIs);
 					conn.close();
 					return recipe;
 				}
@@ -253,7 +301,8 @@ public class Database {
 				Recipe recipe = null;
 				if(resultSet2.next()){
 					String user_id = resultSet2.getString("USER_ID");
-					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id);
+					String[] URIs = getURIs(recipe_id);
+					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id,URIs);
 				}
 				else {
 					conn.close();
