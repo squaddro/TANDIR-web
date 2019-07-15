@@ -66,8 +66,9 @@ public class RecipeController {
 		String rUuid = UUID.randomUUID().toString();
 		
 		String [] uriList = recipe.getURIs();
+		String tag = recipe.getTag();
 		
-		boolean result = Database.addRecipe(rUuid, rName, rDesc, userId,uriList);
+		boolean result = Database.addRecipe(rUuid, rName, rDesc, userId, uriList, tag);
 	
 		if(result)
 			return new Status(StatusCode.RECIPE_ADDED);
