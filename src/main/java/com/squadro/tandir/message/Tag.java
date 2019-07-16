@@ -15,6 +15,10 @@ public class Tag {
 	
 	public String getTag() {
 		return tag;
-	}
+    }
+    
+    public void setTag(String tag){
+        this.tag = tag;
+    }
 	
 }
