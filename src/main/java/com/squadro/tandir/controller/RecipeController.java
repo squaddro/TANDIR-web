@@ -43,7 +43,18 @@ public class RecipeController {
 		Recipe recipe = Database.getRecipe(recipeId);
 		return recipe;
 	}
-	
+
+	@RequestMapping(
+		value = "/search",
+		method = RequestMethod.GET,
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	@ResponseBody
+	public Recipe searchRecipe(String tag) {
+		Recipe recipe = Database.searchRecipe(recipeId);
+		return recipe;
+	}
+
 	@RequestMapping(
 		value = "/addrecipe",
 		method = RequestMethod.POST,

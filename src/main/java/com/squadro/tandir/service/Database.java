@@ -283,6 +283,49 @@ public class Database {
 		
 		return null;
 	}
+
+	public static Recipe[] searchRecipes(String word){	
+		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+		try {
+			Connection conn = connect();
+			
+			
+			String query = "SELECT * FROM RECIPE WHERE TAG = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, word);
+			ResultSet resultSet = stmt.executeQuery();
+			while(resultSet.next()) {
+				String recipe_id = resultSet.getString("RECIPE_ID");
+				String recipe_name = resultSet.getString("RECIPE_NAME");
+				String recipe_desc = resultSet.getString("RECIPE_DESC");
+				String tag = resultSet.getString("TAG");
+				
+				//get userid
+				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, recipe_id);
+				ResultSet resultSet2 = stmt.executeQuery();
+				Recipe recipe = null;
+				if(resultSet2.next()){
+					String user_id = resultSet2.getString("USER_ID");
+					String[] URIs = getURIs(recipe_id);
+					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id, URIs, tag);
+				}
+				else {
+					conn.close();
+					return null;
+				}
+				recipes.add(recipe);
+			}
+			
+			conn.close();
+			return recipes.toArray(new Recipe[recipes.size()]);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 	
 	public static Recipe[] getAllRecipes(){	
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
@@ -325,6 +368,8 @@ public class Database {
 		
 		return null;
 	}
+
+	
 	
 	public static User[] getAllUsers(){	
 		ArrayList<User> users = new ArrayList<User>();
