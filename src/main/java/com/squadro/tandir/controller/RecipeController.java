@@ -47,7 +47,7 @@ public class RecipeController {
 
 	@RequestMapping(
 		value = "/search",
-		method = RequestMethod.GET,
+		method = RequestMethod.POST,
 		produces = MediaType.APPLICATION_JSON_VALUE,
 		consumes = MediaType.APPLICATION_JSON_VALUE
 	)
