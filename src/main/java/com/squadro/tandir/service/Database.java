@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import com.squadro.tandir.message.Recipe;
+import com.squadro.tandir.message.Tag;
 import com.squadro.tandir.message.User;
 
 public class Database {
@@ -284,7 +285,7 @@ public class Database {
 		return null;
 	}
 
-	public static Recipe[] searchRecipes(String word){	
+	public static Recipe[] searchRecipes(Tag word){	
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
 		try {
 			Connection conn = connect();
@@ -292,7 +293,7 @@ public class Database {
 			
 			String query = "SELECT * FROM RECIPE WHERE TAG = ?";
 			PreparedStatement stmt = conn.prepareStatement(query);
-			stmt.setString(1, word);
+			stmt.setString(1, word.getTag());
 			ResultSet resultSet = stmt.executeQuery();
 			while(resultSet.next()) {
 				String recipe_id = resultSet.getString("RECIPE_ID");

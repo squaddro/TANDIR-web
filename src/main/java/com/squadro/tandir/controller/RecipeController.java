@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import com.squadro.tandir.message.Recipe;
 import com.squadro.tandir.message.Status;
 import com.squadro.tandir.message.StatusCode;
+import com.squadro.tandir.message.Tag;
 import com.squadro.tandir.service.Database;
 
 @RestController
@@ -52,7 +53,7 @@ public class RecipeController {
 	)
 	@ResponseBody
 	public Recipe[] searchRecipes(
-	@RequestBody String word,
+	@RequestBody Tag word,
 	@CookieValue(value = "cookie_uuid", defaultValue = "notset") String cookie
 	) {
 		Recipe[] recipes = null;
