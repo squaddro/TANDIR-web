@@ -51,7 +51,10 @@ public class RecipeController {
 		consumes = MediaType.APPLICATION_JSON_VALUE
 	)
 	@ResponseBody
-	public Recipe[] searchRecipes(String word) {
+	public Recipe[] searchRecipes(
+	@RequestBody String word,
+	@CookieValue(value = "cookie_uuid", defaultValue = "notset") String cookie
+	) {
 		Recipe[] recipes = null;
 		recipes = Database.searchRecipes(word);
 		return recipes;
