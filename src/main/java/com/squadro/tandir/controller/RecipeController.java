@@ -50,9 +50,10 @@ public class RecipeController {
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	@ResponseBody
-	public Recipe searchRecipe(String tag) {
-		Recipe recipe = Database.searchRecipe(recipeId);
-		return recipe;
+	public Recipe[] searchRecipes(String word) {
+		Recipe[] recipes = null;
+		recipes = Database.searchRecipes(word);
+		return recipes;
 	}
 
 	@RequestMapping(
