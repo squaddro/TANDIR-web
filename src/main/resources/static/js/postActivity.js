@@ -67,6 +67,7 @@ $(document).ready(function(){
         data.recipe_id = null;
         data.recipe_name = document.getElementById('getName').value.replace(/\t/g, '');
         data.recipe_desc = document.getElementById('getRecipe').value.replace(/\t/g, '');
+        data.tag = document.getElementById('getTag').value.replace(/\t/g, '');
         data.user_id = null;
     	var json_data = JSON.stringify(data);
     	userData.onload = function () {
@@ -77,6 +78,7 @@ $(document).ready(function(){
                     alert(response.message);
                     document.getElementById('getName').value = '';
                     document.getElementById('getRecipe').value = '';
+                    document.getElementById('getTag').value = '';
                     location.reload();
     	        }
     	        else{
@@ -144,6 +146,26 @@ $(document).ready(function(){
     	  }
     	}
     	request.send();      
+    });
+    
+    $('#searchRecipe').click(function(){
+    	var userData = new XMLHttpRequest();
+    	var url = "https://tandir.herokuapp.com/search";
+    	userData.open('POST', url, true);
+    	userData.setRequestHeader('Content-Type', 'application/json');
+    	userData.withCredentials = true;
+    	var data = {};
+    	data.tag = document.getElementById('searching').value.replace(/\t/g, '');
+    	var json_data = JSON.stringify(data);
+    	userData.onload = function () {
+    		
+    		if (userData.readyState == 4 && userData.status == 200) {
+    	        var returningData = JSON.parse(userData.response);
+    	        console.log(returningData);
+      		    document.getElementById("WriteRecipeForSearching").innerHTML += "User: " + returningData[0].user_name + "<br>" + "Recipe Name: " + returningData[0].recipe_name + "<br>" + "Recipe: " + returningData[0].recipe_desc + "<br>" + "tag: " + returningData[0].tag + "<br>" + "<br>";              	        
+    	    }  		
+    	}
+    	userData.send(json_data);
     });
     
     $('#updateRecipe').click(function(){
