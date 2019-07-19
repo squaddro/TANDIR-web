@@ -291,9 +291,10 @@ public class Database {
 			Connection conn = connect();
 			
 			
-			String query = "SELECT * FROM RECIPE WHERE TAG = ?";
+			String query = "SELECT * FROM RECIPE WHERE TAG = ? OR RECIPE_NAME = ?";
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, word.getTag());
+			stmt.setString(2,word.getTag());
 			ResultSet resultSet = stmt.executeQuery();
 			while(resultSet.next()) {
 				String recipe_id = resultSet.getString("RECIPE_ID");
