@@ -1,6 +1,7 @@
 package com.squadro.tandir.service;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -148,7 +149,7 @@ public class Database {
 		return result;
 	}
 	
-	public static boolean addRecipe(String recipeid, String name, String desc, String userid, String [] URIs, String tag){
+	public static boolean addRecipe(String recipeid, String name, String desc, String userid, String [] URIs, String tag, Date date){
 		try {
 			Connection conn = connect();
 			
@@ -170,12 +171,13 @@ public class Database {
 				conn.close();
 				return false;
 			}
-			query = "INSERT INTO RECIPE VALUES(?, ?, ?, ?)";
+			query = "INSERT INTO RECIPE VALUES(?, ?, ?, ?, ?)";
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, recipeid);
 			stmt.setString(2, name);
 			stmt.setString(3, desc);
 			stmt.setString(4, tag);
+			stmt.setDate(5, date);
 			if(stmt.executeUpdate()==0){
 				conn.close();
 				return false;
@@ -262,7 +264,7 @@ public class Database {
 				String recipe_name = resultSet.getString("RECIPE_NAME");
 				String recipe_desc = resultSet.getString("RECIPE_DESC");
 				String tag = resultSet.getString("TAG");
-				
+				Date recipe_date = resultSet.getDate("RECIPE_DATE");
 				//get userid
 				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
 				stmt = conn.prepareStatement(query);
@@ -271,7 +273,7 @@ public class Database {
 				if(resultSet.next()){
 					String user_id = resultSet.getString("USER_ID");
 					String[] URIs = getURIs(recipe_id);
-					Recipe recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id, URIs, tag);
+					Recipe recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id, URIs, tag, recipe_date);
 					conn.close();
 					return recipe;
 				}
@@ -301,6 +303,7 @@ public class Database {
 				String recipe_name = resultSet.getString("RECIPE_NAME");
 				String recipe_desc = resultSet.getString("RECIPE_DESC");
 				String tag = resultSet.getString("TAG");
+				Date recipe_date = resultSet.getDate("RECIPE_DATE");
 				
 				//get userid
 				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
@@ -311,7 +314,7 @@ public class Database {
 				if(resultSet2.next()){
 					String user_id = resultSet2.getString("USER_ID");
 					String[] URIs = getURIs(recipe_id);
-					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id, URIs, tag);
+					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id, URIs, tag, recipe_date);
 				}
 				else {
 					conn.close();
@@ -343,6 +346,7 @@ public class Database {
 				String recipe_name = resultSet.getString("RECIPE_NAME");
 				String recipe_desc = resultSet.getString("RECIPE_DESC");
 				String tag = resultSet.getString("TAG");
+				Date recipe_date = resultSet.getDate("RECIPE_DATE");
 				
 				//get userid
 				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
@@ -353,7 +357,7 @@ public class Database {
 				if(resultSet2.next()){
 					String user_id = resultSet2.getString("USER_ID");
 					String[] URIs = getURIs(recipe_id);
-					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id, URIs, tag);
+					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id, URIs, tag, recipe_date);
 				}
 				else {
 					conn.close();

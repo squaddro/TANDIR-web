@@ -63,12 +63,14 @@ $(document).ready(function(){
     	userData.open('POST', url, true);
     	userData.setRequestHeader('Content-Type', 'application/json');
     	userData.withCredentials = true;
+    	var today = new Date();
     	var data = {};
         data.recipe_id = null;
         data.recipe_name = document.getElementById('getName').value.replace(/\t/g, '');
         data.recipe_desc = document.getElementById('getRecipe').value.replace(/\t/g, '');
         data.tag = document.getElementById('getTag').value.replace(/\t/g, '');
         data.user_id = null;
+        data.recipe_date = today;
     	var json_data = JSON.stringify(data);
     	userData.onload = function () {
     		
@@ -167,6 +169,7 @@ $(document).ready(function(){
     	}
     	userData.send(json_data);
     });
+    
     
     $('#updateRecipe').click(function(){
     	
