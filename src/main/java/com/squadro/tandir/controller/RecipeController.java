@@ -1,6 +1,7 @@
 package com.squadro.tandir.controller;
 
 import java.sql.Date;
+
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,7 +86,7 @@ public class RecipeController {
 		
 		String [] uriList = recipe.getURIs();
 		String tag = recipe.getTag();
-		String recipe_date = recipe.getDate();
+		String recipe_date = recipe.getRecipe_date();
 		
 		boolean result = Database.addRecipe(rUuid, rName, rDesc, userId, uriList, tag, recipe_date);
 	

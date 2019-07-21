@@ -19,14 +19,14 @@ public class Recipe {
 		// nothing
 	}
 	
-	public Recipe(String recipe_id, String recipe_name, String recipe_desc, String user_name, String[] uris, String tag, String date) {
+	public Recipe(String recipe_id, String recipe_name, String recipe_desc, String user_name, String[] uris, String tag, String recipe_date) {
 		this.recipe_id = recipe_id;
 		this.recipe_name = recipe_name;
 		this.recipe_desc = recipe_desc;
 		this.user_name = user_name;
 		this.uris = uris;
 		this.tag = tag;
-		this.recipe_date = date;
+		this.recipe_date = recipe_date;
 	}
 	
 	public String getRecipe_id() {
@@ -77,11 +77,11 @@ public class Recipe {
 		this.tag = tag;
 	}
 
-	public String getDate() {
+	public String getRecipe_date() {
 		return recipe_date;
 	}
 
-	public void setDate(String date) {
+	public void setRecipe_date(String date) {
 		this.recipe_date = date;
 	}
 }
