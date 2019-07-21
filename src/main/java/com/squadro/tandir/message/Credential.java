@@ -7,14 +7,16 @@ public class Credential {
 	
 	private String user_name;
 	private String password;
+	private String token;
 	
 	public Credential() {
 		// nothing
 	}
 	
-	public Credential(String user_name, String password) {
+	public Credential(String user_name, String password, String token) {
 		this.user_name = user_name;
 		this.password = password;
+		this.token = token;
 	}
 	
 	public String getUser_name() {
@@ -31,5 +33,13 @@ public class Credential {
 	
 	public void setPassword() {
 		this.password = password;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

@@ -57,6 +57,32 @@ public class Database {
 		return result;
 	}
 	
+	public static boolean setToken(String username,String token) {
+		boolean result = false;
+		try {
+			String query = "SELECT * FROM ACCOUNT WHERE USER_ID = ?";
+
+			Connection conn = connect();
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, username);
+			ResultSet resultSet = stmt.executeQuery();
+			if(resultSet.next()) {
+				query = "UPDATE ACCOUNT SET TOKEN = ? WHERE USER_ID = ?";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, token);
+				stmt.setString(2, username);
+				result = true;
+			}
+			
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = false;
+		}
+		
+		return result;
+	}
+	
 	public static boolean addUser(String username, String password) {
 		boolean result = false;
 		try {
