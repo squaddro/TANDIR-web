@@ -43,6 +43,11 @@
 	  <artifactId>postgresql</artifactId>
 	  <version>9.4-1205-jdbc42</version>
 	</dependency>
+	<dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20180130</version>
+</dependency>
   </dependencies>
   <build>
     <plugins>

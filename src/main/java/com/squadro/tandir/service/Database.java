@@ -88,6 +88,39 @@ public class Database {
 		return result;
 	}
 	
+	public static String getToken(String recipe_id) {
+		
+		String token = null;
+		
+		try {
+			Connection conn = connect();
+			
+			// check if user exists
+			String query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, recipe_id);
+			ResultSet resultSet = stmt.executeQuery();
+			if(resultSet.next()) {
+				String user_id = resultSet.getString("USER_ID");
+				query = "SELECT * FROM ACCOUNT WHERE USER_ID = ?";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, user_id);
+				resultSet = stmt.executeQuery();
+				if(resultSet.next()) {
+					token = resultSet.getString("token");
+				}
+			}
+			else {
+				token = null;
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			token = null;
+		}
+		return token;
+	}
+	
 	public static boolean addUser(String username, String password) {
 		boolean result = false;
 		try {
