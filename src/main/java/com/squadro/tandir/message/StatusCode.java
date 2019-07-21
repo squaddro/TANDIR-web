@@ -19,7 +19,8 @@ public enum StatusCode {
 	RECIPE_NOT_DELETED(112, "Recipe is not deleted!"),
 	RECIPE_UPDATED(113, "Recipe is updated successfuly!"),
 	RECIPE_NOT_UPDATED(114, "Recipe is not updated!"),
-	SIGNOUT_SUCCESSFULL(115, "User successfully signed out!");
+	SIGNOUT_SUCCESSFULL(115, "User successfully signed out!"),
+	LIKE_SUCCESSFULL(116,"Like is successful");
 	
 	private StatusCode(int status, String message) {
 		this.status = status;

@@ -17,6 +17,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.squadro.tandir.message.Like;
 import com.squadro.tandir.message.Recipe;
+import com.squadro.tandir.message.Status;
+import com.squadro.tandir.message.StatusCode;
 import com.squadro.tandir.message.Tag;
 import com.squadro.tandir.service.Database;
 
@@ -26,10 +28,11 @@ public class FcmController {
 	@RequestMapping(
 			value = "/like",
 			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE
 		)
 		@ResponseBody
-		public void likeRecipe(
+		public Status likeRecipe(
 		@RequestBody Like like,
 		@CookieValue(value = "cookie_uuid", defaultValue = "notset") String cookie
 		) throws JSONException {
@@ -40,6 +43,7 @@ public class FcmController {
 			String recipe_name = recipe.getRecipe_name();
 			
 			postToFcm(token,user_name,recipe_name);
+			return new Status(StatusCode.LIKE_SUCCESSFULL);
 		}
 	
 	public void postToFcm(String token,String user_name,String recipe_name) throws JSONException {
