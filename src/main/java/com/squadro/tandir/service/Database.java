@@ -60,9 +60,10 @@ public class Database {
 	public static boolean setToken(String username,String token) {
 		boolean result = false;
 		try {
-			String query = "SELECT * FROM ACCOUNT WHERE USER_ID = ?";
-
 			Connection conn = connect();
+			
+			// check if user exists
+			String query = "SELECT * FROM ACCOUNT WHERE USER_ID = ?";
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, username);
 			ResultSet resultSet = stmt.executeQuery();
@@ -71,15 +72,19 @@ public class Database {
 				stmt = conn.prepareStatement(query);
 				stmt.setString(1, token);
 				stmt.setString(2, username);
-				result = true;
+				if(stmt.executeUpdate()==0)
+					result = false;
+				else
+					result = true;
 			}
-			
+			else {
+				result = false;
+			}
 			conn.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = false;
 		}
-		
 		return result;
 	}
 	
@@ -97,7 +102,7 @@ public class Database {
 				result = false;
 			}
 			else {
-				query = "INSERT INTO ACCOUNT VALUES (?, ?)";
+				query = "INSERT INTO ACCOUNT VALUES (?, ?, ?)";
 				stmt = conn.prepareStatement(query);
 				stmt.setString(1, username);
 				stmt.setString(2, password);
