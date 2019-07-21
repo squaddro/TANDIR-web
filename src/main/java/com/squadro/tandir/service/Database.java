@@ -175,7 +175,7 @@ public class Database {
 		return result;
 	}
 	
-	public static boolean addRecipe(String recipeid, String name, String desc, String userid, String [] URIs, String tag, Date date){
+	public static boolean addRecipe(String recipeid, String name, String desc, String userid, String [] URIs, String tag, String date){
 		try {
 			Connection conn = connect();
 			
@@ -203,7 +203,7 @@ public class Database {
 			stmt.setString(2, name);
 			stmt.setString(3, desc);
 			stmt.setString(4, tag);
-			stmt.setDate(5, date);
+			stmt.setString(5, date);
 			if(stmt.executeUpdate()==0){
 				conn.close();
 				return false;
@@ -290,7 +290,7 @@ public class Database {
 				String recipe_name = resultSet.getString("RECIPE_NAME");
 				String recipe_desc = resultSet.getString("RECIPE_DESC");
 				String tag = resultSet.getString("TAG");
-				Date recipe_date = resultSet.getDate("RECIPE_DATE");
+				String recipe_date = resultSet.getString("RECIPE_DATE");
 				//get userid
 				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
 				stmt = conn.prepareStatement(query);
@@ -329,7 +329,7 @@ public class Database {
 				String recipe_name = resultSet.getString("RECIPE_NAME");
 				String recipe_desc = resultSet.getString("RECIPE_DESC");
 				String tag = resultSet.getString("TAG");
-				Date recipe_date = resultSet.getDate("RECIPE_DATE");
+				String recipe_date = resultSet.getString("RECIPE_DATE");
 				
 				//get userid
 				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
@@ -372,7 +372,7 @@ public class Database {
 				String recipe_name = resultSet.getString("RECIPE_NAME");
 				String recipe_desc = resultSet.getString("RECIPE_DESC");
 				String tag = resultSet.getString("TAG");
-				Date recipe_date = resultSet.getDate("RECIPE_DATE");
+				String recipe_date = resultSet.getString("RECIPE_DATE");
 				
 				//get userid
 				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";

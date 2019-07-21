@@ -85,7 +85,7 @@ public class RecipeController {
 		
 		String [] uriList = recipe.getURIs();
 		String tag = recipe.getTag();
-		Date recipe_date = recipe.getDate();
+		String recipe_date = recipe.getDate();
 		
 		boolean result = Database.addRecipe(rUuid, rName, rDesc, userId, uriList, tag, recipe_date);
 	

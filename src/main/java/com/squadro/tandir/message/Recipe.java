@@ -13,13 +13,13 @@ public class Recipe {
 	private String user_name;
 	private String[] uris;
 	private String tag;
-	private Date recipe_date;
+	private String recipe_date;
 	
 	public Recipe(){
 		// nothing
 	}
 	
-	public Recipe(String recipe_id, String recipe_name, String recipe_desc, String user_name, String[] uris, String tag, Date date) {
+	public Recipe(String recipe_id, String recipe_name, String recipe_desc, String user_name, String[] uris, String tag, String date) {
 		this.recipe_id = recipe_id;
 		this.recipe_name = recipe_name;
 		this.recipe_desc = recipe_desc;
@@ -77,11 +77,11 @@ public class Recipe {
 		this.tag = tag;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return recipe_date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.recipe_date = date;
 	}
 }
