@@ -55,8 +55,8 @@ public class FcmController {
 		JSONObject innerObj = new JSONObject();
 		innerObj.put("title", "TANDIR");
 		innerObj.put("body","Your recipe named "+recipe_name+" has been liked by user "+ user_name );
-		obj.put("data", innerObj);
-		obj.put("priority", 1);
+		obj.put("notification", innerObj);
+		
 		
 		String url = "https://fcm.googleapis.com/fcm/send";
 		
