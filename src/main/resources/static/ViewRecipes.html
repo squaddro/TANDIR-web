@@ -95,9 +95,10 @@
 							</section>
 
 							<input id="createRecipe" type="button" value="Create Recipe" />
-							<input id="uploadArea" type="file" onchange="previewFile()" /><br>
-							<img id="previewArea" src="" height="200" alt="Image Preview..."></img>
-							<label id="uploadConsole" ></label>
+							<input id="uploadArea" type="file" multiple="multiple" onchange="uploadFiles()" /><br>
+							<div id="previews"/>
+								<label id="uploadConsole" ></label>
+							</div>
 						</section>
 
 						<section id="deleteRecipeSection" class="tn-section">

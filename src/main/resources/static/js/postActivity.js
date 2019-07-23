@@ -1,3 +1,4 @@
+imageIds = [];
 $(document).ready(function(){
     $('#submit1').click(function(){
     	var userData = new XMLHttpRequest();
@@ -76,6 +77,7 @@ $(document).ready(function(){
         data.tag = document.getElementById('getTag').value.replace(/\t/g, '');
         data.user_id = null;
         data.recipe_date = today;
+		data.uris = imageIds;
     	var json_data = JSON.stringify(data);
     	userData.onload = function () {
     		
@@ -177,7 +179,7 @@ $(document).ready(function(){
   				  };
   				  recipeDiv += "</div>"
          		  document.getElementById("WriteRecipeForSearching").innerHTML += recipeDiv;
-    	    }
+				}
     		}
     	}
     	userData.send(json_data);
@@ -249,73 +251,58 @@ $(document).ready(function(){
     	}
     	request.send();      
     });
-	$('#uploadImage').click(function(){
-    	var userData = new XMLHttpRequest();
-        var url = "https://tandir.herokuapp.com/signin";
-        userData.open('POST', url, true);
-    	userData.setRequestHeader('Content-Type', 'application/json');
-    	userData.withCredentials = true;
-    	var data = {};
-        data.user_name = document.getElementById('login_username').value;
-        data.password = document.getElementById('login_password').value;
-        var queryString = "?para1=" + document.getElementById('login_username').value; 
-    	var json_data = JSON.stringify(data);
-
-    	userData.onload = function () {
-    		
-    		if (userData.readyState == 4 && userData.status == 200) {
-    	        var response = JSON.parse(userData.responseText);
-    	        if(response.status == 100){
-    	        	alert(response.message);
-    	            window.location.href = "OpeningPage.html" + queryString;
-    	        }
-    	        else{
-    	        	alert(response.message);
-    	        	window.open("index.html","_self");
-    	        }
-    	    }	
-    	}
-    	userData.send(json_data);
-    });
 });
 
-function previewFile() {
-	var preview = document.getElementById('previewArea');
-	var file = document.querySelector('input[type=file]').files[0];
-	var reader = new FileReader();
-	var ucons = document.getElementById('uploadConsole');
-	ucons.innerHTML = "loading";
-	reader.onloadend = function() {
-		preview.src = reader.result;
+function uploadFiles() {
+	
+	var previewArea = document.getElementById('previews');
+	var createButton = document.getElementById('createRecipe');
+	createButton.disabled = true;
+	var files = document.querySelector('input[type=file]').files;
+	var uploadcons = document.getElementById('uploadConsole');
+	imageIds = [];
+	uploadcons.innerHTML = "loading";
+	var countUpload = 0;
+	console.log(files);
+	for (i=0; i<files.length; i++){
 		
-		var base64 = reader.result.split(',')[1];
-		ucons.innerHTML = "uploading";
-		var userData = new XMLHttpRequest();
-		var url = "https://tandir.herokuapp.com/upload";
-        //var url = "http://localhost:8080/upload";
-        userData.open('POST', url, true);
-    	userData.setRequestHeader('Content-Type', 'application/json');
-    	userData.withCredentials = true;
-    	var data = {};
-        data.payload = base64;
-        
-    	var json_data = JSON.stringify(data);
+		var reader = new FileReader();
+		reader.onloadend = function() {
+			var preview = '<img class="recipeImage" src="' + this.result + '" alt="Image Preview..."></img>';
+			previewArea.innerHTML += preview;
+			//preview.src = reader.result;
+			
+			
+			var base64 = this.result.split(',')[1];
+			var userData = new XMLHttpRequest();
+			var url = "https://tandir.herokuapp.com/upload";
+			//var url = "http://localhost:8080/upload";
+			userData.open('POST', url, true);
+			userData.setRequestHeader('Content-Type', 'application/json');
+			userData.withCredentials = true;
+			var data = {};
+			data.payload = base64;
+			
+			var json_data = JSON.stringify(data);
 
-    	userData.onload = function () {
-    		ucons.innerHTML = "upload finished";
-    		if (userData.readyState == 4 && userData.status == 200) {
-				console.log(userData.responseText);
-    	        var response = JSON.parse(userData.responseText);
-    	        
-    	    }	
-    	}
-    	userData.send(json_data);
+			userData.onload = function () {
+				
+				if (this.readyState == 4 && userData.status == 200) {
+					
+					console.log(this.responseText);
+					var response = JSON.parse(this.responseText);
+					if(response.status == 117){
+						countUpload += 1;
+						document.getElementById('uploadConsole').innerHTML = 'upload ' + countUpload + '/' + files.length;
+						imageIds.push(response.message);
+						if(countUpload == files.length)
+							createButton.disabled = false;
+					}
+					
+				}	
+			}
+			userData.send(json_data);
+		}
+		reader.readAsDataURL(files[i]);
 	}
-	if(file) {
-		reader.readAsDataURL(file);
-	} else {
-		preview.src="";
-	}
-	
-	
 }

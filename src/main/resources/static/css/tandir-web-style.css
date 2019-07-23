@@ -289,3 +289,9 @@ textarea:-ms-input-placeholder {
 	padding: 5px;
 	margin: 5px;
 }
+.recipeImage {
+	border: 1px solid #666666;
+	border-radius: 5px;
+	margin: 5px;
+	height: 150px;
+}
