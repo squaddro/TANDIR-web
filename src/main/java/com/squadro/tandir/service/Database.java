@@ -1,6 +1,7 @@
 package com.squadro.tandir.service;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,9 +10,11 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 
 import com.squadro.tandir.message.Recipe;
+import com.squadro.tandir.message.Tag;
 import com.squadro.tandir.message.User;
 
 public class Database {
@@ -53,6 +56,70 @@ public class Database {
 		}
 		
 		return result;
+	}
+	
+	public static boolean setToken(String username,String token) {
+		boolean result = false;
+		try {
+			Connection conn = connect();
+			
+			// check if user exists
+			String query = "SELECT * FROM ACCOUNT WHERE USER_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, username);
+			ResultSet resultSet = stmt.executeQuery();
+			if(resultSet.next()) {
+				query = "UPDATE ACCOUNT SET TOKEN = ? WHERE USER_ID = ?";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, token);
+				stmt.setString(2, username);
+				if(stmt.executeUpdate()==0)
+					result = false;
+				else
+					result = true;
+			}
+			else {
+				result = false;
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = false;
+		}
+		return result;
+	}
+	
+	public static String getToken(String recipe_id) {
+		
+		String token = null;
+		
+		try {
+			Connection conn = connect();
+			
+			// check if user exists
+			String query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, recipe_id);
+			ResultSet resultSet = stmt.executeQuery();
+			if(resultSet.next()) {
+				String user_id = resultSet.getString("USER_ID");
+				query = "SELECT * FROM ACCOUNT WHERE USER_ID = ?";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, user_id);
+				resultSet = stmt.executeQuery();
+				if(resultSet.next()) {
+					token = resultSet.getString("token");
+				}
+			}
+			else {
+				token = null;
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			token = null;
+		}
+		return token;
 	}
 	
 	public static boolean addUser(String username, String password) {
@@ -147,7 +214,7 @@ public class Database {
 		return result;
 	}
 	
-	public static boolean addRecipe(String recipeid, String name, String desc, String userid){
+	public static boolean addRecipe(String recipeid, String name, String desc, String userid, String [] URIs, String tag, String date){
 		try {
 			Connection conn = connect();
 			
@@ -169,11 +236,13 @@ public class Database {
 				conn.close();
 				return false;
 			}
-			query = "INSERT INTO RECIPE VALUES(?, ?, ?)";
+			query = "INSERT INTO RECIPE VALUES(?, ?, ?, ?, ?)";
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, recipeid);
 			stmt.setString(2, name);
 			stmt.setString(3, desc);
+			stmt.setString(4, tag);
+			stmt.setString(5, date);
 			if(stmt.executeUpdate()==0){
 				conn.close();
 				return false;
@@ -186,7 +255,23 @@ public class Database {
 				conn.close();
 				return false;
 			}
+			if(URIs != null) {
+				for(int i = 0;i<URIs.length;i++) {
+					query = "INSERT INTO RECIPE_PHOTOS VALUES(?, ?)";
+					stmt = conn.prepareStatement(query);
+					stmt.setString(1, recipeid);
+					stmt.setString(2, URIs[i]);
+					if(stmt.executeUpdate()==0) {
+						conn.close();
+						return false;
+					}	
+				}
+			}
+			
+			
+			
 			conn.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -195,6 +280,40 @@ public class Database {
 		return true;
 	}
 	
+	public static String[] getURIs(String id) {
+		ArrayList<String> URIs = new ArrayList<String>();
+		try {
+			Connection conn = connect();
+			
+			// check if recipe exists
+			String query = "SELECT * FROM RECIPE WHERE RECIPE_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, id);
+			ResultSet resultSet = stmt.executeQuery();
+			if(resultSet.next()) {
+				String recipe_id = resultSet.getString("RECIPE_ID");
+				
+				query = "SELECT * FROM RECIPE_PHOTOS WHERE RECIPE_ID = ?";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, recipe_id);
+				ResultSet resultSet2 = stmt.executeQuery();
+				
+				
+				while(resultSet2.next()) {
+					String uri = resultSet2.getString("photo_id");
+					URIs.add(uri);
+				}
+				
+			}
+			conn.close();
+			return URIs.toArray(new String[URIs.size()]);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
 	public static Recipe getRecipe(String id){
 		
 		try {
@@ -209,7 +328,8 @@ public class Database {
 				String recipe_id = resultSet.getString("RECIPE_ID");
 				String recipe_name = resultSet.getString("RECIPE_NAME");
 				String recipe_desc = resultSet.getString("RECIPE_DESC");
-				
+				String tag = resultSet.getString("TAG");
+				String recipe_date = resultSet.getString("RECIPE_DATE");
 				//get userid
 				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
 				stmt = conn.prepareStatement(query);
@@ -217,13 +337,59 @@ public class Database {
 				resultSet = stmt.executeQuery();
 				if(resultSet.next()){
 					String user_id = resultSet.getString("USER_ID");
-					Recipe recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id);
+					String[] URIs = getURIs(recipe_id);
+					Recipe recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id, URIs, tag, recipe_date);
 					conn.close();
 					return recipe;
 				}
 			}
 			
 			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	public static Recipe[] searchRecipes(Tag word){	
+		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+		try {
+			Connection conn = connect();
+			
+			
+			String query = "SELECT * FROM RECIPE WHERE TAG = ? OR RECIPE_NAME = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, word.getTag());
+			stmt.setString(2,word.getTag());
+			ResultSet resultSet = stmt.executeQuery();
+			while(resultSet.next()) {
+				String recipe_id = resultSet.getString("RECIPE_ID");
+				String recipe_name = resultSet.getString("RECIPE_NAME");
+				String recipe_desc = resultSet.getString("RECIPE_DESC");
+				String tag = resultSet.getString("TAG");
+				String recipe_date = resultSet.getString("RECIPE_DATE");
+				
+				//get userid
+				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, recipe_id);
+				ResultSet resultSet2 = stmt.executeQuery();
+				Recipe recipe = null;
+				if(resultSet2.next()){
+					String user_id = resultSet2.getString("USER_ID");
+					String[] URIs = getURIs(recipe_id);
+					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id, URIs, tag, recipe_date);
+				}
+				else {
+					conn.close();
+					return null;
+				}
+				recipes.add(recipe);
+			}
+			
+			conn.close();
+			return recipes.toArray(new Recipe[recipes.size()]);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -244,6 +410,8 @@ public class Database {
 				String recipe_id = resultSet.getString("RECIPE_ID");
 				String recipe_name = resultSet.getString("RECIPE_NAME");
 				String recipe_desc = resultSet.getString("RECIPE_DESC");
+				String tag = resultSet.getString("TAG");
+				String recipe_date = resultSet.getString("RECIPE_DATE");
 				
 				//get userid
 				query = "SELECT * FROM ACCOUNT_RECIPE WHERE RECIPE_ID = ?";
@@ -253,7 +421,8 @@ public class Database {
 				Recipe recipe = null;
 				if(resultSet2.next()){
 					String user_id = resultSet2.getString("USER_ID");
-					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id);
+					String[] URIs = getURIs(recipe_id);
+					recipe = new Recipe(recipe_id, recipe_name, recipe_desc, user_id, URIs, tag, recipe_date);
 				}
 				else {
 					conn.close();
@@ -270,6 +439,8 @@ public class Database {
 		
 		return null;
 	}
+
+	
 	
 	public static User[] getAllUsers(){	
 		ArrayList<User> users = new ArrayList<User>();
@@ -366,6 +537,14 @@ public class Database {
 				return false;
 			}
 			
+			query = "DELETE FROM RECIPE_PHOTOS WHERE RECIPE_ID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, recipeid);
+			if(stmt.executeUpdate()==0) {
+				conn.close();
+				return false;
+			}
+			
 			query = "DELETE FROM RECIPE WHERE RECIPE_ID = ?";
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, recipeid);
@@ -373,6 +552,7 @@ public class Database {
 				conn.close();
 				return false;
 			}
+			
 			conn.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -446,5 +626,94 @@ public class Database {
 		}
 		
 		return true;
+	}
+	
+	public static boolean updateRecipeTag(String recipeid, String tag, String userid) {
+		try {
+			Connection conn = connect();
+			
+			// check if user has recipe
+			String query = "SELECT * FROM ACCOUNT_RECIPE WHERE USER_ID = ? AND RECIPE_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, userid);
+			stmt.setString(2, recipeid);
+			ResultSet resultSet = stmt.executeQuery();
+			if(!resultSet.next()){
+				conn.close();
+				return false;
+			}
+			
+			// update recipe tag
+			query = "UPDATE RECIPE SET TAG = ? WHERE RECIPE_ID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, tag);
+			stmt.setString(2, recipeid);
+			if(stmt.executeUpdate()==0) {
+				conn.close();
+				return false;
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	public static boolean addImage(String photoId, byte[] img) {
+		try {
+			Connection conn = connect();
+			
+			// check if photo id exists
+			String query = "SELECT * FROM PHOTO WHERE PHOTO_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, photoId);
+			ResultSet resultSet = stmt.executeQuery();
+			if(resultSet.next()){
+				conn.close();
+				return false;
+			}
+			
+			InputStream byteStream = new ByteArrayInputStream(img);
+			
+			// insert photo
+			query = "INSERT INTO PHOTO VALUES(?, ?)";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, photoId);
+			stmt.setBinaryStream(2, byteStream, img.length);
+			if(stmt.executeUpdate()==0) {
+				conn.close();
+				return false;
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public static byte[] getImage(String photoId) {
+		try {
+			Connection conn = connect();
+			
+			// check if photo id exists
+			String query = "SELECT photo_img FROM PHOTO WHERE PHOTO_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, photoId);
+			ResultSet resultSet = stmt.executeQuery();
+			if(resultSet.next()){
+				byte[] imgBytes = resultSet.getBytes(1);
+				conn.close();
+				return imgBytes;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }

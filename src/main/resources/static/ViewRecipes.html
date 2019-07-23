@@ -38,6 +38,8 @@
 								class="tn-nav-item-link">Delete Recipe</a></li>
 							<li class="tn-nav-item"><a href="#UpdatedRecipe"
 								class="tn-nav-item-link">Update Recipe</a></li>
+							<li class="tn-nav-item"><a href="#searchTag"
+								class="tn-nav-item-link">Search Recipe</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -86,8 +88,17 @@
 								<textarea id="getRecipe" >
 								</textarea>
 							</section>
+							<section id="Tag" class="tn-section">
+								<label>Tag For Recipe:</label>
+								<textarea rows="1" cols="10" id="getTag">
+								</textarea>
+							</section>
 
 							<input id="createRecipe" type="button" value="Create Recipe" />
+							<input id="uploadArea" type="file" multiple="multiple" onchange="uploadFiles()" /><br>
+							<div id="previews"/>
+								<label id="uploadConsole" ></label>
+							</div>
 						</section>
 
 						<section id="deleteRecipeSection" class="tn-section">
@@ -118,6 +129,22 @@
   							</div> 
 							<input id="updateRecipe" type="button" value="Update" />
 						</section>
+						
+						<section id="searchTag" class="tn-section">
+							<header>
+								<h2 class="tn-orange-text tn-section-title tn-margin-b-30">Search
+									Recipe</h2>
+							</header>
+							<section id="Search" class="tn-section">
+								<label>Search:</label>
+								<textarea id="searching">
+								</textarea>
+								<p id="WriteRecipeForSearching"></p>
+							</section>
+							
+						    <input id="searchRecipe" type="button" value="Search Recipe" />
+						</section>
+						
 						<section id="signOut" class="tn-section">
                             <button id="signOut" type="button" value="Sign Out">Sign Out</button>                         
                         </section> 

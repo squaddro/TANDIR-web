@@ -1,5 +1,8 @@
 package com.squadro.tandir.message;
 
+
+import java.sql.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -8,16 +11,22 @@ public class Recipe {
 	private String recipe_name;
 	private String recipe_desc;
 	private String user_name;
+	private String[] uris;
+	private String tag;
+	private String recipe_date;
 	
 	public Recipe(){
 		// nothing
 	}
 	
-	public Recipe(String recipe_id, String recipe_name, String recipe_desc, String user_name) {
+	public Recipe(String recipe_id, String recipe_name, String recipe_desc, String user_name, String[] uris, String tag, String recipe_date) {
 		this.recipe_id = recipe_id;
 		this.recipe_name = recipe_name;
 		this.recipe_desc = recipe_desc;
 		this.user_name = user_name;
+		this.uris = uris;
+		this.tag = tag;
+		this.recipe_date = recipe_date;
 	}
 	
 	public String getRecipe_id() {
@@ -50,5 +59,29 @@ public class Recipe {
 	
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
+	}
+	
+	public String[] getURIs() {
+		return uris;
+	}
+	
+	public void setURIs(String [] uris) {
+		this.uris = uris;
+	}
+	
+	public String getTag() {
+		return tag;
+	}
+	
+	public void setTag() {
+		this.tag = tag;
+	}
+
+	public String getRecipe_date() {
+		return recipe_date;
+	}
+
+	public void setRecipe_date(String date) {
+		this.recipe_date = date;
 	}
 }

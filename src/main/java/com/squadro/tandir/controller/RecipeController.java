@@ -1,5 +1,7 @@
 package com.squadro.tandir.controller;
 
+import java.sql.Date;
+
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,7 @@ import org.springframework.http.MediaType;
 import com.squadro.tandir.message.Recipe;
 import com.squadro.tandir.message.Status;
 import com.squadro.tandir.message.StatusCode;
+import com.squadro.tandir.message.Tag;
 import com.squadro.tandir.service.Database;
 
 @RestController
@@ -43,7 +46,23 @@ public class RecipeController {
 		Recipe recipe = Database.getRecipe(recipeId);
 		return recipe;
 	}
-	
+
+	@RequestMapping(
+		value = "/search",
+		method = RequestMethod.POST,
+		produces = MediaType.APPLICATION_JSON_VALUE,
+		consumes = MediaType.APPLICATION_JSON_VALUE
+	)
+	@ResponseBody
+	public Recipe[] searchRecipes(
+	@RequestBody Tag word,
+	@CookieValue(value = "cookie_uuid", defaultValue = "notset") String cookie
+	) {
+		Recipe[] recipes = null;
+		recipes = Database.searchRecipes(word);
+		return recipes;
+	}
+
 	@RequestMapping(
 		value = "/addrecipe",
 		method = RequestMethod.POST,
@@ -65,7 +84,12 @@ public class RecipeController {
 		}
 		String rUuid = UUID.randomUUID().toString();
 		
-		boolean result = Database.addRecipe(rUuid, rName, rDesc, userId);
+		String [] uriList = recipe.getURIs();
+		String tag = recipe.getTag();
+		String recipe_date = recipe.getRecipe_date();
+		
+		boolean result = Database.addRecipe(rUuid, rName, rDesc, userId, uriList, tag, recipe_date);
+	
 		if(result)
 			return new Status(StatusCode.RECIPE_ADDED);
 		else
@@ -135,6 +159,12 @@ public class RecipeController {
 			boolean result = Database.updateRecipeDesc(rId, rDesc, userId);
 			if(!result)
 				// TODO what if name is updated successfully?
+				return new Status(StatusCode.RECIPE_NOT_UPDATED);
+		}
+		String tag = recipe.getTag();
+		if(tag != null) {
+			boolean result = Database.updateRecipeTag(rId, tag, userId);
+			if(!result)
 				return new Status(StatusCode.RECIPE_NOT_UPDATED);
 		}
 		

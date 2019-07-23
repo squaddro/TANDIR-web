@@ -44,11 +44,14 @@ public class LoginController {
 		
 		String user = credential.getUser_name();
 		String pass = credential.getPassword();
+		String token = credential.getToken();
+		
+		
 		
 		if(user == null || pass == null) {
 			return new Status(StatusCode.SIGNIN_REJECT);
 		}
-		
+		Database.setToken(user, token);
 		if(Database.checkPassword(user, pass)) {
 			String newUuid = UUID.randomUUID().toString();
 			if(Database.setCookie(user, newUuid)){

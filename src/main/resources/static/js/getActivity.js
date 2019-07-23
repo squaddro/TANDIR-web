@@ -36,7 +36,12 @@ function setRecipes(btn){
               request2[i].onload = function() {
             	  var data2 = JSON.parse(this.response);
             	  if (request2[i].status==200) {
-            		  document.getElementById("WriteRecipe").innerHTML += data2.recipe_name + "<br>" + data2.recipe_desc + "<br>";          
+					  var recipeDiv = '<div class="recipe">' + data2.recipe_name + "<br>" + data2.recipe_desc + '<br>';
+					  for(j=0; j<data2.uris.length; j++){
+							recipeDiv +='<img class="recipeImage" src="https://tandir.herokuapp.com/imagebin/' + data2.uris[j] + '"></img>';
+					  };
+					  recipeDiv += "</div>"
+            		  document.getElementById("WriteRecipe").innerHTML += recipeDiv;
             	  }
             	  else{
             		  alert("Error on view recipes.");
@@ -61,3 +66,14 @@ $(document).ready(function(){
 	    window.location.href = "ViewRecipes.html" + queryString2;
     });
 });
+
+$(document).ready(function(){
+    $('#accountSettings').click(function(){
+    	var queryString = decodeURIComponent(window.location.search);
+    	queryString = queryString.substring(1);
+    	var queries = queryString.split("&");
+    	var queryString2 = "?" + queries[0]; 
+	    window.location.href = "AccountSettings.html" + queryString2;
+    });
+});
+

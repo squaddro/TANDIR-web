@@ -277,3 +277,21 @@ textarea:-ms-input-placeholder {
 
 	.tn-nav-item { font-size: 1.9rem; }
 }
+#uploadArea {
+	width: 350px;
+	height: 70px;
+	padding: 10px;
+	border: 1px solid #aaaaaa;
+}
+.recipe {
+	border: 1px solid #aaaaaa;
+	border-radius: 5px;
+	padding: 5px;
+	margin: 5px;
+}
+.recipeImage {
+	border: 1px solid #666666;
+	border-radius: 5px;
+	margin: 5px;
+	height: 150px;
+}
