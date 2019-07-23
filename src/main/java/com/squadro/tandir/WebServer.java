@@ -20,15 +20,6 @@ public class WebServer {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**").allowedOrigins(origins).allowCredentials(true).maxAge(3600);
-//				registry.addMapping("/signin").allowedOrigins(origins);
-//				registry.addMapping("/signup").allowedOrigins(origins);
-//				registry.addMapping("/recipe").allowedOrigins(origins);
-//				registry.addMapping("/recipe/{id}").allowedOrigins(origins);
-//				registry.addMapping("/user").allowedOrigins(origins);
-//				registry.addMapping("/user/{id}").allowedOrigins(origins);
-//				registry.addMapping("/addrecipe").allowedOrigins(origins);
-//				registry.addMapping("/deleterecipe").allowedOrigins(origins);
-//				registry.addMapping("/updaterecipe").allowedOrigins(origins);
 			}
 		};
 	}

@@ -241,4 +241,73 @@ $(document).ready(function(){
     	}
     	request.send();      
     });
+	$('#uploadImage').click(function(){
+    	var userData = new XMLHttpRequest();
+        var url = "https://tandir.herokuapp.com/signin";
+        userData.open('POST', url, true);
+    	userData.setRequestHeader('Content-Type', 'application/json');
+    	userData.withCredentials = true;
+    	var data = {};
+        data.user_name = document.getElementById('login_username').value;
+        data.password = document.getElementById('login_password').value;
+        var queryString = "?para1=" + document.getElementById('login_username').value; 
+    	var json_data = JSON.stringify(data);
+
+    	userData.onload = function () {
+    		
+    		if (userData.readyState == 4 && userData.status == 200) {
+    	        var response = JSON.parse(userData.responseText);
+    	        if(response.status == 100){
+    	        	alert(response.message);
+    	            window.location.href = "OpeningPage.html" + queryString;
+    	        }
+    	        else{
+    	        	alert(response.message);
+    	        	window.open("index.html","_self");
+    	        }
+    	    }	
+    	}
+    	userData.send(json_data);
+    });
 });
+
+function previewFile() {
+	var preview = document.getElementById('previewArea');
+	var file = document.querySelector('input[type=file]').files[0];
+	var reader = new FileReader();
+	var ucons = document.getElementById('uploadConsole');
+	ucons.innerHTML = "loading";
+	reader.onloadend = function() {
+		preview.src = reader.result;
+		
+		var base64 = reader.result.split(',')[1];
+		ucons.innerHTML = "uploading";
+		var userData = new XMLHttpRequest();
+		var url = "https://tandir.herokuapp.com/upload";
+        //var url = "http://localhost:8080/upload";
+        userData.open('POST', url, true);
+    	userData.setRequestHeader('Content-Type', 'application/json');
+    	userData.withCredentials = true;
+    	var data = {};
+        data.payload = base64;
+        
+    	var json_data = JSON.stringify(data);
+
+    	userData.onload = function () {
+    		ucons.innerHTML = "upload finished";
+    		if (userData.readyState == 4 && userData.status == 200) {
+				console.log(userData.responseText);
+    	        var response = JSON.parse(userData.responseText);
+    	        
+    	    }	
+    	}
+    	userData.send(json_data);
+	}
+	if(file) {
+		reader.readAsDataURL(file);
+	} else {
+		preview.src="";
+	}
+	
+	
+}

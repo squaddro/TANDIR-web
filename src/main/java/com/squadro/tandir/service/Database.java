@@ -10,7 +10,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 
 import com.squadro.tandir.message.Recipe;
 import com.squadro.tandir.message.Tag;
@@ -135,7 +136,7 @@ public class Database {
 				result = false;
 			}
 			else {
-				query = "INSERT INTO ACCOUNT VALUES (?, ?, ?)";
+				query = "INSERT INTO ACCOUNT VALUES (?, ?)";
 				stmt = conn.prepareStatement(query);
 				stmt.setString(1, username);
 				stmt.setString(2, password);
@@ -279,7 +280,7 @@ public class Database {
 		return true;
 	}
 	
-		public static String[] getURIs(String id) {
+	public static String[] getURIs(String id) {
 		ArrayList<String> URIs = new ArrayList<String>();
 		try {
 			Connection conn = connect();
@@ -299,7 +300,7 @@ public class Database {
 				
 				
 				while(resultSet2.next()) {
-					String uri = resultSet2.getString("uri");
+					String uri = resultSet2.getString("photo_id");
 					URIs.add(uri);
 				}
 				
@@ -658,5 +659,59 @@ public class Database {
 		return true;
 		
 	}
-
+	
+	public static boolean addImage(String photoId, byte[] img) {
+		try {
+			Connection conn = connect();
+			
+			// check if photo id exists
+			String query = "SELECT * FROM PHOTO WHERE PHOTO_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, photoId);
+			ResultSet resultSet = stmt.executeQuery();
+			if(resultSet.next()){
+				conn.close();
+				return false;
+			}
+			
+			InputStream byteStream = new ByteArrayInputStream(img);
+			
+			// insert photo
+			query = "INSERT INTO PHOTO VALUES(?, ?)";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, photoId);
+			stmt.setBinaryStream(2, byteStream, img.length);
+			if(stmt.executeUpdate()==0) {
+				conn.close();
+				return false;
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public static byte[] getImage(String photoId) {
+		try {
+			Connection conn = connect();
+			
+			// check if photo id exists
+			String query = "SELECT photo_img FROM PHOTO WHERE PHOTO_ID = ?";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, photoId);
+			ResultSet resultSet = stmt.executeQuery();
+			if(resultSet.next()){
+				byte[] imgBytes = resultSet.getBytes(1);
+				conn.close();
+				return imgBytes;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 }

@@ -17,4 +17,8 @@ public class Status {
 	public String getMessage() {
 		return status.getMessage();
 	}
+	
+	public void setMessage(String message) {
+		this.status.setMessage(message);
+	}
 }

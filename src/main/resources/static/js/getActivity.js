@@ -36,7 +36,12 @@ function setRecipes(btn){
               request2[i].onload = function() {
             	  var data2 = JSON.parse(this.response);
             	  if (request2[i].status==200) {
-            		  document.getElementById("WriteRecipe").innerHTML += data2.recipe_name + "<br>" + data2.recipe_desc + "<br>";          
+					  var recipeDiv = '<div class="recipe">' + data2.recipe_name + "<br>" + data2.recipe_desc;
+					  for(j=0; j<data2.uris.length; j++){
+							recipeDiv += "<br>" + '<img style="height:100px" src="https://tandir.herokuapp.com/imagebin/' + data2.uris[j] + '"></img>';
+					  };
+					  recipeDiv += "</div>"
+            		  document.getElementById("WriteRecipe").innerHTML += recipeDiv;
             	  }
             	  else{
             		  alert("Error on view recipes.");
