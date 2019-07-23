@@ -16,7 +16,7 @@ public enum StatusCode {
 	REJECT_NOT_LOGGED_IN(109, "You are not logged in!"),
 	SIGNIN_REJECT_COOKIE_NOTSET(110, "Cookie could not be set!"),
 	RECIPE_DELETED(111, "Recipe is successfully deleted!"),
-	RECIPE_NOT_DELETED(112, "Recipe is not deleted!"),
+	RECIPE_NOT_DELETED(112, "Recipe is deleted!"),
 	RECIPE_UPDATED(113, "Recipe is updated successfuly!"),
 	RECIPE_NOT_UPDATED(114, "Recipe is not updated!"),
 	SIGNOUT_SUCCESSFULL(115, "User successfully signed out!"),

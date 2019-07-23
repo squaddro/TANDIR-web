@@ -537,13 +537,6 @@ public class Database {
 				return false;
 			}
 			
-			query = "DELETE FROM RECIPE WHERE RECIPE_ID = ?";
-			stmt = conn.prepareStatement(query);
-			stmt.setString(1, recipeid);
-			if(stmt.executeUpdate()==0) {
-				conn.close();
-				return false;
-			}
 			query = "DELETE FROM RECIPE_PHOTOS WHERE RECIPE_ID = ?";
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, recipeid);
@@ -551,6 +544,15 @@ public class Database {
 				conn.close();
 				return false;
 			}
+			
+			query = "DELETE FROM RECIPE WHERE RECIPE_ID = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, recipeid);
+			if(stmt.executeUpdate()==0) {
+				conn.close();
+				return false;
+			}
+			
 			conn.close();
 		} catch (Exception e) {
 			e.printStackTrace();
