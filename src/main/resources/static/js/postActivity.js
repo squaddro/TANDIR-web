@@ -167,10 +167,18 @@ $(document).ready(function(){
     	userData.onload = function () {
     		
     		if (userData.readyState == 4 && userData.status == 200) {
+     
     	        var returningData = JSON.parse(userData.response);
-    	        console.log(returningData);
-      		    document.getElementById("WriteRecipeForSearching").innerHTML += "User: " + returningData[0].user_name + "<br>" + "Recipe Name: " + returningData[0].recipe_name + "<br>" + "Recipe: " + returningData[0].recipe_desc + "<br>" + "tag: " + returningData[0].tag + "<br>" + "<br>";              	        
-    	    }  		
+    			var i;
+    			for(i=0; i<returningData.length; i++){
+    			  var recipeDiv = '<div class="recipe">' + "User: " + returningData[i].user_name + "<br>" + "Recipe Name: " + returningData[i].recipe_name + "<br>" + "Recipe: " + returningData[i].recipe_desc + "<br>" + "tag: " + returningData[i].tag + "<br>" ;
+  				  for(j=0; j<returningData[i].uris.length; j++){
+  						recipeDiv += "<br>" + '<img style="height:100px" src="https://tandir.herokuapp.com/imagebin/' + returningData[i].uris[j] + '"></img>';
+  				  };
+  				  recipeDiv += "</div>"
+         		  document.getElementById("WriteRecipeForSearching").innerHTML += recipeDiv;
+    	    }
+    		}
     	}
     	userData.send(json_data);
     });
